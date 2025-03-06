@@ -1,31 +1,50 @@
-class Vehicle:
+from abc import ABC, abstractmethod
+import logging
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class Vehicle(ABC):
     def __init__(self, make: str, model: str, region_spec: str):
         self.make = make
         self.model = model
         self.region_spec = region_spec
 
-    def start_engine(self):
+    @abstractmethod
+    def start_engine(self) -> None:
         pass
 
 
+# Клас Car, успадковує Vehicle
 class Car(Vehicle):
-    def start_engine(self):
-        print(f"{self.make} {self.model} {self.region_spec}: Двигун запущено")
+    def start_engine(self) -> None:
+        logger.info(
+            f" {Fore.BLUE}{self.make} {self.model} ({self.region_spec} Spec): {Style.BRIGHT}Двигун запущено"
+        )
 
 
+# Клас Motorcycle, успадковує Vehicle
 class Motorcycle(Vehicle):
-    def start_engine(self):
-        print(f"{self.make} {self.model} {self.region_spec}: Мотор заведено")
+    def start_engine(self) -> None:
+        logger.info(
+            f" {Fore.YELLOW}{self.make} {self.model} ({self.region_spec} Spec): {Style.BRIGHT}Мотор заведено"
+        )
 
 
-class VehicleFactory:
+class VehicleFactory(ABC):
+    @abstractmethod
     def create_car(self, make: str, model: str) -> Vehicle:
         pass
 
+    @abstractmethod
     def create_motorcycle(self, make: str, model: str) -> Vehicle:
         pass
 
 
+# Фабрика для США
 class USVehicleFactory(VehicleFactory):
     def create_car(self, make: str, model: str) -> Vehicle:
         return Car(make, model, "US")

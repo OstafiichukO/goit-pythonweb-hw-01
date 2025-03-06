@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
+from colorama import Fore, init
+
+init(autoreset=True)
 
 
 # Принцип SRP: клас Book для зберігання інформації про книгу
@@ -51,20 +54,20 @@ class LibraryManager:
     def add_book(self, title: str, author: str, year: str) -> None:
         book = Book(title, author, year)
         self.library.add_book(book)
-        print(f'Book "{title}" added successfully.')
+        print(f'{Fore.GREEN}Book "{title}" added successfully.{Fore.RESET}')
 
     def remove_book(self, title: str) -> None:
         self.library.remove_book(title)
-        print(f'Book "{title}" removed successfully.')
+        print(f'{Fore.RED}Book "{title}" removed successfully.{Fore.RESET}')
 
     def show_books(self) -> None:
         books = self.library.get_books()
         if books:
-            print(f"Books in the library:")
+            print(f"{Fore.YELLOW}Books in the library:{Fore.RESET}")
             for book in books:
-                print(f"{book}")
+                print(f"{Fore.CYAN}{book}{Fore.RESET}")
         else:
-            print(f"The library is empty.")
+            print(f"{Fore.MAGENTA}The library is empty.{Fore.RESET}")
 
 
 # Принцип OCP: код Library розширюється через композицію
@@ -79,24 +82,30 @@ def main():
     manager = LibraryManager(library)
 
     while True:
-        command = input(f"Enter command (add, remove, show, exit):").strip().lower()
+        command = (
+            input(f"{Fore.BLUE}Enter command (add, remove, show, exit): {Fore.RESET}")
+            .strip()
+            .lower()
+        )
 
         match command:
             case "add":
-                title = input(f"Enter book title:").strip()
-                author = input(f"Enter book author:").strip()
-                year = input(f"Enter book year:").strip()
+                title = input(f"{Fore.CYAN}Enter book title: {Fore.RESET}").strip()
+                author = input(f"{Fore.CYAN}Enter book author: {Fore.RESET}").strip()
+                year = input(f"{Fore.CYAN}Enter book year: {Fore.RESET}").strip()
                 manager.add_book(title, author, year)
             case "remove":
-                title = input(f"Enter book title to remove: ").strip()
+                title = input(
+                    f"{Fore.CYAN}Enter book title to remove: {Fore.RESET}"
+                ).strip()
                 manager.remove_book(title)
             case "show":
                 manager.show_books()
             case "exit":
-                print(f"Exiting program...")
+                print(f"{Fore.RED}Exiting program...{Fore.RESET}")
                 break
             case _:
-                print(f"Invalid command. Please try again.")
+                print(f"{Fore.YELLOW}Invalid command. Please try again.{Fore.RESET}")
 
 
 if __name__ == "__main__":
