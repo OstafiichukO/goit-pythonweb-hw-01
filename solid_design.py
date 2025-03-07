@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import List
 from colorama import Fore, init
+import logging
 
 init(autoreset=True)
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Принцип SRP: клас Book для зберігання інформації про книгу
 class Book:
@@ -54,20 +57,20 @@ class LibraryManager:
     def add_book(self, title: str, author: str, year: str) -> None:
         book = Book(title, author, year)
         self.library.add_book(book)
-        print(f'{Fore.GREEN}Book "{title}" added successfully.{Fore.RESET}')
+        logger.info(f'{Fore.GREEN}Book "{title}" added successfully.{Fore.RESET}')
 
     def remove_book(self, title: str) -> None:
         self.library.remove_book(title)
-        print(f'{Fore.RED}Book "{title}" removed successfully.{Fore.RESET}')
+        logger.info(f'{Fore.RED}Book "{title}" removed successfully.{Fore.RESET}')
 
     def show_books(self) -> None:
         books = self.library.get_books()
         if books:
-            print(f"{Fore.YELLOW}Books in the library:{Fore.RESET}")
+            logger.info(f"{Fore.YELLOW}Books in the library:{Fore.RESET}")
             for book in books:
-                print(f"{Fore.CYAN}{book}{Fore.RESET}")
+                logger.info(f"{Fore.CYAN}{book}{Fore.RESET}")
         else:
-            print(f"{Fore.MAGENTA}The library is empty.{Fore.RESET}")
+            logger.info(f"{Fore.MAGENTA}The library is empty.{Fore.RESET}")
 
 
 # Принцип OCP: код Library розширюється через композицію
@@ -76,7 +79,6 @@ class ExtendedLibrary(Library):
         return [book for book in self._books if book.author == author]
 
 
-# Головна функція
 def main():
     library = Library()
     manager = LibraryManager(library)
@@ -102,10 +104,10 @@ def main():
             case "show":
                 manager.show_books()
             case "exit":
-                print(f"{Fore.RED}Exiting program...{Fore.RESET}")
+                logger.info(f"{Fore.RED}Exiting program...{Fore.RESET}")
                 break
             case _:
-                print(f"{Fore.YELLOW}Invalid command. Please try again.{Fore.RESET}")
+                logger.warning(f"{Fore.YELLOW}Invalid command. Please try again.{Fore.RESET}")
 
 
 if __name__ == "__main__":
